@@ -10,7 +10,6 @@ const getDogs = async () => {
      .then(json => json.data.map(async (dog) =>{
       try{
         const exist = await Dog.findOne({where:{
-          id: dog.id,
           name: dog.name,
         }})
         if(!exist){
@@ -22,14 +21,33 @@ const getDogs = async () => {
            let id = temp.t_id
           ids.push(id)
           }
+
+          let wMin = dog.weight.metric.split(" - ")[0];
+          let wMax = dog.weight.metric.split(" - ")[1]; 
+          let hMin = dog.height.metric.split(" - ")[0]; 
+          let hMax = dog.height.metric.split(" - ")[1];
+          let lsMin = dog.life_span.split(" - ")[0];
+          let lsMax = dog.life_span.split(" - ")[1];
+
+          if(dog.name === "Smooth Fox Terrier"){ 
+              weightMin = "6";
+          }
+          if(dog.name === "Olde English Bulldogge"){
+              weightMin = "20";
+              weightMax = "30"; 
+          }
+
           let dg = await Dog.create({
             name: dog.name,
-            height: dog.height.metric,
-            weight: dog.weight.metric,
+            heightMin: hMin,
+            heightMax: hMax,
+            weightMin: wMin,
+            weightMax: wMax,
+            life_ageMin: lsMin,
+            life_ageMax: lsMax,
             origin: dog.origin ? dog.origin : "Not specified",
             bred_for: dog.bred_for ? dog.bred_for : "Not specified",
             breed_group: dog.breed_group ? dog.breed_group : "Not specified",
-            life_age: dog.life_span,
             img: dog.image.url ? dog.image.url : "https://i.gifer.com/origin/c4/c4e585501041d76b475c301fa9f47779_w200.gif",
           })
           dg.addTemper(ids)
