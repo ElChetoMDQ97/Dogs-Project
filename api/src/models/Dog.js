@@ -13,32 +13,36 @@ module.exports = (sequelize) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     heightMin:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },    
     heightMax:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     weightMin:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     weightMax:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     life_ageMin:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     life_ageMax:{
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     fan:{
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: true,
     },
     origin:{
-      type: DataTypes.STRING
+      type: DataTypes.TEXT,
+      defaultValue: null,
     },
     breed_group:{
       type: DataTypes.STRING

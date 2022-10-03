@@ -4,10 +4,10 @@ const  axios  = require('axios')
 dotenv.config({ path: '../../.env'})
 
 const api = process.env.API_KEY
-// `https://api.thedogapi.com/v1/breeds?api_key=${api}`
+
 const getTempers = async () => {
   try{
-         await axios.get('https://api.thedogapi.com/v1/breeds')
+         await axios.get(`https://api.thedogapi.com/v1/breeds?api_key=${api}`)
     .then(json => json.data.map(async (temper)=>{
 
         if(!temper.temperament){temper.temperament = 'Unknown'}
@@ -18,13 +18,13 @@ const getTempers = async () => {
 
          Temper.findOrCreate({
           where:{
-            t_name: info[i],
+           name: info[i],
           }
         })
     }
   }
 ))}
-catch(e){return e}
+catch(e){console.log(e)}
 }
 
 module.exports = {

@@ -27,6 +27,12 @@
 .App-link {
   color: #61dafb;
 }
+body{
+    background: url('https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=1200:*');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
 
 @keyframes App-logo-spin {
   from {

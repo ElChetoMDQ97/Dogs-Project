@@ -1,82 +1,69 @@
 const { Router } = require("express");
 const { Dog, Temper } = require("../db.js");
-const { getDogs } = require("../middlewares/DogMiddleware.js");
+const { getAll } = require("../middlewares/DogMiddleware.js");
 
 const router = Router();
 
 router.get('/', async (req,res)=>{
-    const dg = await Dog.findAll({
-        include:{
-        model: Temper,
-        attributes:['t_name'],
-        through: {
-            attributes: [],
-        }
-    }})
-    if(dg.length < 1){
-        await getDogs()
+const { name } = req.query
+let all = await getAll()
+if(name){
+    let dogName = all.filter(dog => dog.name.toLowerCase().includes(name.toLowerCase()));
+    if(dogName.length > 0){
+    return   res.status(200).send(dogName)
+    } else {
+    return   res.status(404).send('Error 404: name not found')
     }
-
-    const { name } = req.query;
-    if(name){
-    const dogName = await Dog.findOne({where:{name: name}, include:{
-        model: Temper,
-        attributes: ['t_name'], 
-        through: {
-            attributes: [],
-        }}})
-    if(!dogName){res.status(404).send('Dog dont found by id')}
-    else{res.status(200).send(dogName)}
-    }
-res.send(dg)
-})
-
-router.get('/:id', async (req, res)=>{
-
-const { id }= req.params
-
-const dog = await Dog.findOne({where:{id: id}});
-
-if(!dog){
-    res.status(404).send(`Id: ${id} not found`)
-}else{
-    res.status(200).send(dog)
+} else {
+    res.status(200).send(all)
 }
 })
 
+router.get('/:id', async (req, res)=>{
+ const { id } = req.params
+ let all = await getAll()
+ let exist = all.filter(d => d.id === id)
+ if(exist.length > 0){
+    res.status(200).send(exist)
+ } else {
+    res.status(404).send(`Error 404: Cant found dog with id: ${id}`)
+ }
+})
+
 router.post('/', async (req,res)=>{
-    let { name, heightMin, heightMax, weightMin, weightMax, life_ageMin, life_ageMax, origin, breed_group, bred_for, tempers, img} = req.body
+    let { 
+
+        name, heightMin, heightMax, weightMin, 
+        weightMax, life_ageMin, life_ageMax, 
+         Tempers, image, origin,
+    } = req.body
+
     if(!name){return res.status(409).send('Name is require')}
-    if(
-    isNaN(heightMin) ||
-    isNaN(heightMax) ||
-    isNaN(weightMin) ||
-    isNaN(weightMax) ||
-    isNaN(life_ageMin) ||
-    isNaN(life_ageMax)
-    ){return res.status().send('One or more arguments are not a number')}
  
-    const existe = await Pokemon.findOne({ where: { name: name }})
+    const existe = await Dog.findOne({ where: { name: name }})
     if (existe) return res.status(409).send("Dog already exist");
 
     const dog = await Dog.create({
-        name: name.toLowerCase(),
-        heightMin: heightMin,
-        heightMax: heightMax,
-        weightMin: weightMin,
-        weightMax: weightMax,
-        life_ageMin: life_ageMin,
-        life_ageMax: life_ageMax,
-        origin: origin ? origin : 'Not specified by user',
-        breed_group: breed_group ? breed_group : 'Not specified by user',
-        bred_for: bred_for ? bred_for : 'Not specified by user',
-        img: img ? img : "https://img.favpng.com/19/10/9/question-mark-symbol-sign-computer-icons-png-favpng-T3t3e8dw8dHkGeyPW3MKvVewM.jpg",
-        fan: true,
+        name,
+        heightMin,
+        heightMax,
+        weightMin,
+        weightMax,
+        life_ageMin,
+        origin,
+        life_ageMax: life_ageMax + ' years',
+        image: image ? image : "https://img.favpng.com/19/10/9/question-mark-symbol-sign-computer-icons-png-favpng-T3t3e8dw8dHkGeyPW3MKvVewM.jpg",
       });
-      if(!tempers.length){tempers = [118]}
 
-    await dog.addTemper(tempers)
+      if(Tempers.length === 0){Tempers = 'Aloof'}
+
+      let associatedTemp = await Temper.findAll({
+        where: { name: Tempers},
+    })
+
+    await dog.addTemper(associatedTemp)
     res.status(200).send('Dog created successfully')
 })
 
 module.exports = router;
+
