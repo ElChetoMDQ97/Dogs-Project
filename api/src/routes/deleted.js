@@ -1,14 +1,12 @@
 const { Router } = require("express");
 const { Dog } = require("../db.js");
-const { getAll }= require('../Middlewares/DogMiddleware.js')
 
 const router = Router();
 
 router.delete('/:id', async (req, res) => {
     const id = req.params.id;
-    let dogsTotal = await getAll();
-    let dogFind = dogsTotal.filter(dog => dog.id === id);
-    if(dogFind.length > 0){
+    let dogFind = Dog.findOne({where: {id: id}})
+    if(dogFind){
         await Dog.destroy({
             where: { id: id },
         });

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import './search.css'
 import { getName } from '../../../actions';
+import Swal from 'sweetalert2';
 
 export default function SearchBar({currentPage}){
     const dispatch = useDispatch();
@@ -12,10 +13,17 @@ export default function SearchBar({currentPage}){
     }
 
     const handleSubmit = (e) => {
+        if(name.length < 1){
+        return Swal.fire({
+         icon: 'error',
+         title: 'Error 411',
+         text: 'Put something to search'
+         })
+        }
         e.preventDefault();
         dispatch(getName(name));
         setName('');
-        setTimeout(() => {currentPage(1)},100);
+        setTimeout(() => {currentPage(1)},10);
     }
 
 

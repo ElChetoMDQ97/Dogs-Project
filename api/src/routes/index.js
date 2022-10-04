@@ -4,6 +4,8 @@ const { Router } = require('express');
 const dogs = require('./dogs.js');
 const tempers = require('./tempers.js');
 const deleted = require('./deleted.js');
+const breed_groups = require('./breed_groups.js')
+
 
 
 const api = Router();
@@ -13,5 +15,7 @@ const api = Router();
 api.use('/dogs', dogs);
 api.use('/tempers', tempers);
 api.use('/deleted', deleted);
+api.use('/breed_groups', breed_groups);
+
 
 module.exports = api;

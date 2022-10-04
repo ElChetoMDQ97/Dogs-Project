@@ -5,9 +5,8 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('dog', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     name: {
@@ -43,9 +42,6 @@ module.exports = (sequelize) => {
     origin:{
       type: DataTypes.TEXT,
       defaultValue: null,
-    },
-    breed_group:{
-      type: DataTypes.STRING
     },
     bred_for:{
       type: DataTypes.STRING

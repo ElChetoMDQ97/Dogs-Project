@@ -15,7 +15,6 @@ const getTempers = async () => {
         const info = temper.temperament.split(', ')
 
        for(let i = 0; i < info.length; i++){
-
          Temper.findOrCreate({
           where:{
            name: info[i],

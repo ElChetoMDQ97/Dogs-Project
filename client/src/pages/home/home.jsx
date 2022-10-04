@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {getDogs, getTemperament, filterDogByTemperament, filterDogByCreated, filterDogByName, filterDogByWeight} from '../../actions';
+import {getDogs, getTemperament, getBreedG, filterDogByTemperament, filterDogByCreated, filterDogByName, filterDogByWeight, filterDogByBreedG} from '../../actions';
 import {Link} from 'react-router-dom';
 import Card from '../../components/cards/cards.jsx';
 import NavBar from '../../components/bars/nav/nav.jsx';
@@ -12,6 +12,7 @@ export default function Home() {
     const dispatch = useDispatch();
     const allDogs = useSelector(state => state.Dogs);
     const allTemperament = useSelector(state => state.Tempers);
+    const allBreedGroup = useSelector(state => state.BreedGroups)
     const [currentPage, setCurrentPage] = useState(1);
     const [dogPerPage] = useState(8);
     const indexLastDog = currentPage * dogPerPage;
@@ -21,11 +22,14 @@ export default function Home() {
     const [order, setOrder] = useState('');
     const [charge, setCharge] = useState(false)
 
-console.log(order)
-
+    setTimeout(() => {
+        console.log(order)
+        }, 2592000000)
+        
     useEffect(() => {
         setCharge(true);        
         dispatch(getTemperament());
+        dispatch(getBreedG());
         dispatch(getDogs());
         setTimeout(() => {
             setCharge(false);
@@ -35,6 +39,12 @@ console.log(order)
     function handleTemperament(e){
         e.preventDefault()
         dispatch(filterDogByTemperament(e.target.value));
+        setCurrentPage(1);
+    }
+
+    function handleBreedG(e){
+        e.preventDefault()
+        dispatch(filterDogByBreedG(e.target.value));
         setCurrentPage(1);
     }
 
@@ -67,22 +77,24 @@ console.log(order)
       const handleReset = (e) => {
         e.preventDefault();
         dispatch(getTemperament());
+        dispatch(getBreedG());
         dispatch(getDogs());
         document.getElementById('order').value = 'ord';
         document.getElementById('created').value = 'CREATED';
         document.getElementById('temp').value = 'All';
+        document.getElementById('breed').value = 'All';
         document.getElementById('weight').value = 'weight';
         document.getElementById('pages').value = 0;
         setTimeout(() => {
           setCurrentPage(1);
-        }, 1);
+        }, 10);
       };
 
       return (
         <div className={style.contenedor}>
         <NavBar/>
         <SearchBar currentPage = {() => setCurrentPage(1)} />
-        <div>
+        <div className={style.innerContenedor}>
         <button type= "submit" onClick={(e) => handleReset(e)} className= {style.button}>Reset</button>
       &nbsp;
             <select id='order' defaultValue="ord" onChange={e => handleName(e)} className= {style.select} >
@@ -101,6 +113,14 @@ console.log(order)
                 {
                     allTemperament?.map(temperament => (
                         <option key={temperament.id} value={temperament.name} >{temperament.name}</option>
+                    ))
+                }
+            </select>
+            <select id='breed' defaultValue = "All" onChange={e => handleBreedG(e)} className= {style.select}>
+                <option value="All">Filter by Breed Group</option>
+                {
+                    allBreedGroup?.map(bG => (
+                        <option key={bG.id} value={bG.name} >{bG.name}</option>
                     ))
                 }
             </select>
@@ -139,7 +159,7 @@ console.log(order)
                     <Card key={dog.id}
                     name= {dog.name}
                     image= {dog.image}
-                    Tempers= {dog.Tempers[0].name? dog.Tempers.map(el => el.name +(" ")) : dog.Tempers.map(el => el +(" "))}
+                    Tempers= {dog.Tempers[0]?.name? dog.Tempers.map(el => el.name +(" ")) : dog.Tempers.map(el => el +(" "))}
                     weightMin= {dog.weightMin}
                     weightMax= {dog.weightMax}
                     id= {dog.id} />
@@ -150,6 +170,24 @@ console.log(order)
             } 
             { currentDogs.length === 0 && !charge ?  <h1><br/><br/><br/>No dogs found</h1> : null }
             </div>
+            <div className= {style.pg}>
+        <button  onClick={()=>{ if(currentPage > 1) paginate(currentPage - 1)}}>
+          &laquo; Previous
+        </button>
+        &nbsp;
+        <span>Page {currentPage} of {maxPage} </span>
+        &nbsp;
+        <button onClick={()=> { if(currentPage < maxPage) paginate(Number(currentPage) + 1)}}>
+          Next &raquo;
+        </button>
+        &nbsp;
+        <select id='pages' defaultValue={0} className= {style.select} onChange={(e) => paginate(e.target.value)} >
+            <option value={0} hidden>Go to page</option>
+                {pages?.map(n => 
+                    <option key={n} value={n}>{n}</option> 
+                )}
+            </select>
+      </div>
         </div>
     </div>
       )

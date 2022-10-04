@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 export function getDogs(){
     return async function(dispatch){
@@ -19,7 +20,15 @@ export function getTemperament(){
         })
     }
 }
-
+export function getBreedG(){
+    return async function(dispatch){
+        const response = await axios.get("http://localhost:3001/breed_groups")
+        return dispatch({
+            type: "GET_BREEDG",
+            payload: response.data
+        })
+    }
+}
 export function getName(name){
     return async function(dispatch){
         try {
@@ -29,7 +38,11 @@ export function getName(name){
                 payload: response.data
             })
         } catch (error) {
-            alert("Error 404: dog not found")
+            Swal.fire({
+                icon: 'error',
+                title: 'Error 404',
+                text: 'Dog dont found'
+            })
         }
     }
 }
@@ -37,10 +50,14 @@ export function PostDog(payload){
     return async function(){
         try{
             const response = await axios.post("http://localhost:3001/dogs", payload)
-            alert('Dog created succesfully')
             return response
         }catch(error){
-            alert("Error 412: cant create dog")
+            Swal.fire({
+                icon: 'error',
+                title: 'Error 412',
+                text: 'Cant create dog',
+                footer: 'See if name is in use!'
+            })
         }
     }
 }
@@ -51,7 +68,12 @@ export function filterDogByTemperament(payload){
         payload
     }
 }
-
+export function filterDogByBreedG(payload){
+    return {
+        type: "FILTER_DOG_BY_BREEDG",
+        payload
+    }
+}
 export function filterDogByCreated(payload){
     return {
         type: "FILTER_DOG_BY_CREATED",
@@ -81,7 +103,11 @@ export function getDetail(id) {
             payload: response.data
         })
         } catch (error) {
-            alert("Error 404: Dog info dont found, see if that dog exist first.")
+            Swal.fire({
+                icon: 'error',
+                title: 'Error 404',
+                text: 'Dog info dont found, see if that dog exist first.'
+            })
         }
     }
 }
@@ -95,7 +121,12 @@ export function removeDog(id){
             payload: response.data
         })}
         catch(error){
-            alert('Error 412: cant delete dog')
+            Swal.fire({
+                icon: 'error',
+                title: 'Error 412',
+                text: 'Cant delete dog',
+                footer: 'Check if dog id is correct, and try again'
+            })
         }
     }
 }

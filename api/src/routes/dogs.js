@@ -1,12 +1,33 @@
 const { Router } = require("express");
-const { Dog, Temper } = require("../db.js");
-const { getAll } = require("../middlewares/DogMiddleware.js");
+const { Dog, Temper, Breed_group } = require("../db.js");
+const { getDogsApi } = require("../middlewares/DogMiddleware.js");
 
 const router = Router();
 
 router.get('/', async (req,res)=>{
+    let exist = await Dog.findOne({where:{id: 1}})
+    if(!exist){
+        await getDogsApi()
+    }
 const { name } = req.query
-let all = await getAll()
+let all = await Dog.findAll({
+    order: ['id'],
+    include: [{
+        model: Temper,
+        attributes: ['name'],
+        through: {
+            attributes: [],
+        },
+    },
+    {
+        model: Breed_group,
+        attributes: ['name'],
+        through: {
+            attributes: [],
+        },
+    }
+]
+})
 if(name){
     let dogName = all.filter(dog => dog.name.toLowerCase().includes(name.toLowerCase()));
     if(dogName.length > 0){
@@ -15,16 +36,32 @@ if(name){
     return   res.status(404).send('Error 404: name not found')
     }
 } else {
-    res.status(200).send(all)
+    res.status(200).send(await all)
 }
 })
 
 router.get('/:id', async (req, res)=>{
  const { id } = req.params
- let all = await getAll()
- let exist = all.filter(d => d.id === id)
- if(exist.length > 0){
-    res.status(200).send(exist)
+ let dog = await Dog.findOne({
+    where: {id: id},
+    include: [{
+        model: Temper,
+        attributes: ['name'],
+        through: {
+            attributes: [],
+        },
+    },
+    {
+        model: Breed_group,
+        attributes: ['name'],
+        through: {
+            attributes: [],
+        },
+    }
+]
+})
+ if(dog){
+    res.status(200).send(dog)
  } else {
     res.status(404).send(`Error 404: Cant found dog with id: ${id}`)
  }
@@ -35,7 +72,7 @@ router.post('/', async (req,res)=>{
 
         name, heightMin, heightMax, weightMin, 
         weightMax, life_ageMin, life_ageMax, 
-         Tempers, image, origin,
+         Tempers, image, origin, bred_for, Breed_groups,
     } = req.body
 
     if(!name){return res.status(409).send('Name is require')}
@@ -50,17 +87,20 @@ router.post('/', async (req,res)=>{
         weightMin,
         weightMax,
         life_ageMin,
-        origin,
-        life_ageMax: life_ageMax + ' years',
+        bred_for: bred_for ? bred_for : 'not specified',
+        origin: origin ? origin : 'not specified',
+        life_ageMax,
         image: image ? image : "https://img.favpng.com/19/10/9/question-mark-symbol-sign-computer-icons-png-favpng-T3t3e8dw8dHkGeyPW3MKvVewM.jpg",
       });
-
-      if(Tempers.length === 0){Tempers = 'Aloof'}
-
+      if(Breed_groups.length === 0){Breed_groups = ["Unknown"]}
+      if(Tempers.length === 0){Tempers = ["Unknown"]}
+      let associatedBreedgroup = await Breed_group.findAll({
+        where: {name: Breed_groups}
+      })
       let associatedTemp = await Temper.findAll({
         where: { name: Tempers},
     })
-
+    await dog.addBreed_group(associatedBreedgroup)
     await dog.addTemper(associatedTemp)
     res.status(200).send('Dog created successfully')
 })

@@ -1,6 +1,7 @@
 const initialState = {
     Dogs: [],
     Tempers: [],
+    BreedGroups: [],
     allDogs: [],
     Details: [],
     DogsCreated : []
@@ -20,6 +21,11 @@ function rootReducer(state = initialState, action){
                 ...state,
                 Tempers: action.payload
         }
+        case "GET_BREEDG":
+            return {
+                ...state,
+                BreedGroups: action.payload
+        }
         case "FILTER_DOG_BY_TEMPERAMENT":
             let filterDogs =  state.DogsCreated
             let filteredDogs = filterDogs?.filter(dog => dog.Tempers.map(e => e.name)?.includes(action.payload) || dog.Tempers.includes(action.payload));
@@ -28,6 +34,14 @@ function rootReducer(state = initialState, action){
                 ...state,
                 Dogs: filteredDogs
         }
+        case 'FILTER_DOG_BY_BREEDG':
+            let filterDogsBG = state.DogsCreated
+            let filteredDogsBG = filterDogsBG?.filter(dog => dog.Breed_groups.map(e => e.name)?.includes(action.payload) || dog.Breed_groups.includes(action.payload))
+            if(action.payload === 'All') filteredDogsBG = filterDogsBG
+            return {
+                ...state,
+                Dogs: filteredDogsBG
+            }
         case "FILTER_DOG_BY_CREATED":
             const filterDogsByCreated =  state.allDogs;
             let filter = action.payload === "db" ? filterDogsByCreated.filter(d => d.fan) : filterDogsByCreated.filter(d => !d.fan)
