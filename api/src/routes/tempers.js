@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { Temper } = require("../db.js");
-const { getTempers } = require("../middlewares/TemperMiddleware.js");
+const { getTempers } = require("../Middlewares/TemperMiddleware.js");
 
 const router = Router();
 

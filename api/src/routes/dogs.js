@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { Dog, Temper, Breed_group } = require("../db.js");
-const { getDogsApi } = require("../middlewares/DogMiddleware.js");
+const { getDogsApi } = require("../Middlewares/DogMiddleware.js");
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { Breed_group } = require("../db.js");
-const { getBreed_groups } = require("../middlewares/BreedGroupMiddleware.js");
+const { getBreed_groups } = require("../Middlewares/BreedGroupMiddleware.js");
 
 const router = Router();
 
