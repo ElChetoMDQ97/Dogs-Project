@@ -61,7 +61,6 @@ export function PostDog(payload){
         }
     }
 }
-
 export function filterDogByTemperament(payload){
     return {
         type: "FILTER_DOG_BY_TEMPERAMENT",

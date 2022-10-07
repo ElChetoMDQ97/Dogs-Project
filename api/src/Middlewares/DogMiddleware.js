@@ -1,5 +1,5 @@
 const { Dog, Temper, Breed_group } = require("../db.js");
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const  axios  = require('axios');
 const { getTempers } = require("./TemperMiddleware.js");
 const { getBreed_groups } = require("./BreedGroupMiddleware.js");
