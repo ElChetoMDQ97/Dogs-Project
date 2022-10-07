@@ -5,9 +5,8 @@ import Card from "../cards/cards";
 import { PostDog, getTemperament, getBreedG } from '../../actions';
 import style from './form.module.css';
 import Swal from 'sweetalert2';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import IconButton from '@material-ui/core/IconButton';
-import axios from 'axios';
+// import PhotoCamera from '@material-ui/icons/PhotoCamera';
+// import IconButton from '@material-ui/core/IconButton';
 
 
 const regex = /^[a-zA-ZñÑ]+$/
@@ -102,27 +101,14 @@ export default function DogsCreate(){
             [e.target.name]: e.target.value
         }))
     }
-    async function handleUpChage(e){
-        let urlImg = URL.createObjectURL(e.target.files[0]);
-
-    //     const serverRes = await fetch('https://freeimage.host/api/1/upload/?key=6d207e02198a847aa98d0a2a901485a5', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': urlImg && urlImg.type,
-    //     },
-    //     body: urlImg, 
-    // });
-    // const serverJsonResponse = await serverRes.json();
-try{ 
-    let upImg = await axios.post('https://freeimage.host/api/1/upload/?key=6d207e02198a847aa98d0a2a901485a5', encodeURIComponent(urlImg))
-    console.log(upImg)}
-       catch(error){console.log(error)}
+    // async function handleUpChage(e){
+    //     let urlImg = URL.createObjectURL(e.target.files[0]);
         
-        setDog({
-            ...dog,
-            [e.target.name]: urlImg
-        })
-    }
+    //     setDog({
+    //         ...dog,
+    //         [e.target.name]: urlImg
+    //     })
+    
     function handleSelect(e){
         const temperament = e.target.value;
         if(!dog.Tempers.includes(temperament)){
@@ -247,8 +233,8 @@ try{
                 <div>
                     <h3 className= {style.tittle2}>Image</h3>
                     <input type="text" value= {dog.image} id='output' name= "image" placeholder="Insert Image" onChange={(e) => handleChange(e)} className= {style.input}/>
-                    <input type="file" accept="image/*" style={{ display: 'none' }} id="contained-button-file"  name= "image" onChange={(e) => handleUpChage(e)}/>
-                    <label htmlFor="contained-button-file"><IconButton color="primary" aria-label="upload picture" component="span"><PhotoCamera /></IconButton></label>
+                    {/* <input type="file" accept="image/*" style={{ display: 'none' }} id="contained-button-file"  name= "image" onChange={(e) => handleUpChage(e)}/>
+                    <label htmlFor="contained-button-file"><IconButton color="primary" aria-label="upload picture" component="span"><PhotoCamera /></IconButton></label> */}
                 </div>
                 <select onChange={(e) => handleSelect(e)} className= {style.select}>
                     <option value= "Select" hidden>Select Temperament</option>
